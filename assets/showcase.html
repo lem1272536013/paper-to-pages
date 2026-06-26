@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Letter Paper Component Showcase</title>
+  <style>
+    :root {
+      --paper: #fbf5e6;
+      --paper-deep: #efe2c8;
+      --ink: #25334f;
+      --ink-soft: rgba(37, 51, 79, 0.72);
+      --rule: rgba(87, 129, 158, 0.26);
+      --accent: rgba(178, 44, 49, 0.78);
+      --accent-soft: rgba(178, 44, 49, 0.2);
+      --line: 7.55mm;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: #cbc1ad;
+      color: var(--ink);
+      font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", "FangSong", "仿宋", serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255,255,255,0.42), transparent 24rem),
+        linear-gradient(135deg, #d8cebc 0%, #b8ad9a 100%);
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 28px 18px 48px;
+    }
+
+    .page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 18mm 18mm 16mm 29mm;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,0.68), transparent 45mm),
+        linear-gradient(90deg, rgba(239,224,195,0.55), transparent 12mm),
+        var(--paper);
+      box-shadow:
+        0 18px 42px rgba(57,45,33,0.27),
+        inset 0 0 0 1px rgba(96,75,45,0.12);
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      top: 17mm;
+      bottom: 17mm;
+      left: 25.5mm;
+      width: 0.45mm;
+      border-radius: 999px;
+      background: rgba(178,44,49,0.36);
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      min-height: calc(297mm - 34mm);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent calc(var(--line) - 0.23mm),
+          var(--rule) calc(var(--line) - 0.23mm),
+          var(--rule) var(--line)
+        );
+      background-position: 0 0;
+      mix-blend-mode: multiply;
+    }
+
+    h1, h2, p, blockquote, table, .separator,
+    .math-block, .flow-block, .map-block, .compare-block,
+    .metric-block, .result-block, .question-block, .note-block,
+    .code-block {
+      margin: 0;
+    }
+
+    .title-panel {
+      height: calc(var(--line) * 3);
+      position: relative;
+      background: rgba(251,245,230,0.92);
+      text-align: center;
+    }
+
+    h1 {
+      height: calc(var(--line) * 2);
+      padding-top: calc(var(--line) * 0.25);
+      color: #1e2a43;
+      font-size: 22px;
+      line-height: var(--line);
+      letter-spacing: 0;
+    }
+
+    .byline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--line);
+      color: rgba(37,51,79,0.62);
+      font: 14px/var(--line) Georgia, "Times New Roman", serif;
+      letter-spacing: 0;
+    }
+
+    .meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      height: var(--line);
+      color: rgba(37,51,79,0.62);
+      font-size: 14px;
+      line-height: var(--line);
+      text-indent: 0;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(var(--line) - 1.8mm);
+      min-width: 20mm;
+      padding: 0 3.2mm;
+      border-radius: 999px;
+      color: rgba(37,51,79,0.72);
+      background: rgba(251,245,230,0.62);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.12);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .date-stamp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 29mm;
+      height: calc(var(--line) - 1.8mm);
+      padding: 0 3mm;
+      border: 1px solid rgba(178,44,49,0.24);
+      border-radius: 1.4mm;
+      color: rgba(178,44,49,0.76);
+      background: rgba(251,245,230,0.58);
+      font: 700 13px/1 Georgia, "Times New Roman", serif;
+      transform: rotate(-0.4deg);
+    }
+
+    .signature-line {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 2mm;
+      height: var(--line);
+      padding-right: 8mm;
+      color: rgba(37,51,79,0.76);
+      font-size: 15px;
+      line-height: var(--line);
+      text-indent: 0;
+    }
+
+    .signature-name {
+      display: inline-block;
+      min-width: 30mm;
+      border-bottom: 1px solid rgba(37,51,79,0.35);
+      color: #1e2a43;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .page-no {
+      position: absolute;
+      right: 6mm;
+      bottom: 3mm;
+      color: rgba(37,51,79,0.38);
+      font: 14px/1 Georgia, "Times New Roman", serif;
+    }
+
+    h2 {
+      height: calc(var(--line) * 2);
+      padding-top: var(--line);
+      color: #263a61;
+      font-size: 18px;
+      line-height: var(--line);
+      font-weight: 700;
+    }
+
+    p, blockquote, .list-line, td, th {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: var(--line);
+    }
+
+    p { text-indent: 2em; }
+
+    strong {
+      color: #1a2948;
+      font-weight: 700;
+      text-shadow: 0.35px 0 rgba(26,41,72,0.25);
+    }
+
+    blockquote {
+      font-weight: 700;
+      text-indent: 2em;
+    }
+
+    .separator { height: var(--line); }
+
+    .list-line {
+      display: grid;
+      grid-template-columns: 7mm 1fr;
+      column-gap: 1.5mm;
+      align-items: baseline;
+      padding-left: 3mm;
+    }
+
+    .marker {
+      color: var(--ink-soft);
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .var-token {
+      display: inline-block;
+      min-width: 0;
+      padding: 0 0.35mm;
+      font-family: "Times New Roman", "Cambria Math", serif;
+      font-weight: 700;
+      color: #1b2947;
+      text-align: center;
+      text-indent: 0;
+    }
+
+    .var-token sub {
+      font-size: 0.68em;
+      line-height: 0;
+      vertical-align: -0.25em;
+    }
+
+    .component-label {
+      float: right;
+      color: rgba(37,51,79,0.44);
+      font: 12px/var(--line) "Consolas", monospace;
+    }
+
+    .math-block {
+      height: var(--line);
+      padding: 0 3mm;
+      color: #1b2947;
+      background: rgba(240,234,218,0.62);
+      font-family: "Times New Roman", "Cambria Math", serif;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: var(--line);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .math-block .op {
+      display: inline-block;
+      padding: 0 0.35mm;
+      font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", serif;
+      font-weight: 700;
+    }
+
+    .flow-block {
+      padding: 0 8mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.76) 8%, rgba(240,234,218,0.76) 92%, transparent 100%);
+      text-align: center;
+    }
+
+    .flow-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54mm;
+      height: var(--line);
+      padding: 0 5mm;
+      border-radius: 999px;
+      color: #1f3152;
+      background: rgba(251,245,230,0.82);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.16), 0 0.5mm 1.4mm rgba(70,54,35,0.07);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: var(--line);
+    }
+
+    .flow-connector {
+      position: relative;
+      height: var(--line);
+      line-height: var(--line);
+      color: rgba(37,51,79,0.64);
+      font: 700 17px/var(--line) "Times New Roman", serif;
+    }
+
+    .flow-connector::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 1.2mm;
+      bottom: 1.2mm;
+      width: 1px;
+      background: rgba(37,51,79,0.28);
+    }
+
+    .flow-connector span {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      width: 6mm;
+      background: #f7f0dc;
+    }
+
+    .map-block {
+      padding: 0 3mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 5%, rgba(240,234,218,0.72) 95%, transparent 100%);
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 9mm minmax(0, 1.15fr);
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .map-cell {
+      min-width: 0;
+      height: calc(var(--line) - 1.6mm);
+      padding: 0 3mm;
+      border-radius: 1.2mm;
+      background: rgba(251,245,230,0.66);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.12);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .map-left { text-align: right; }
+    .map-right { text-align: left; }
+
+    .map-arrow {
+      color: var(--accent);
+      font: 700 16px/var(--line) "Times New Roman", serif;
+      text-align: center;
+    }
+
+    .compare-block {
+      padding: 0 10mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 8%, rgba(240,234,218,0.72) 92%, transparent 100%);
+      text-align: center;
+    }
+
+    .compare-item,
+    .compare-vs {
+      height: var(--line);
+      line-height: var(--line);
+    }
+
+    .compare-item span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 50mm;
+      height: calc(var(--line) - 1.4mm);
+      padding: 0 5mm;
+      border-radius: 1.2mm;
+      background: rgba(251,245,230,0.66);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.12);
+      color: #213454;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .compare-vs {
+      color: var(--accent);
+      font: 700 15px/var(--line) "Times New Roman", serif;
+    }
+
+    .metric-block {
+      padding: 0 13mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 9%, rgba(240,234,218,0.72) 91%, transparent 100%);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: minmax(26mm, auto) minmax(18mm, auto);
+      gap: 3mm;
+      align-items: center;
+      justify-content: center;
+      height: var(--line);
+      line-height: var(--line);
+    }
+
+    .metric-label,
+    .metric-value {
+      height: calc(var(--line) - 1.4mm);
+      padding: 0 3.2mm;
+      border-radius: 1.2mm;
+      background: rgba(251,245,230,0.64);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.11);
+      color: #213454;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .metric-value { color: var(--accent); }
+
+    .result-block {
+      height: var(--line);
+      padding: 0 18mm;
+      line-height: var(--line);
+      text-align: center;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 12%, rgba(240,234,218,0.72) 88%, transparent 100%);
+    }
+
+    .result-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42mm;
+      height: calc(var(--line) - 1.4mm);
+      padding: 0 6mm;
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(251,245,230,0.72);
+      box-shadow: inset 0 0 0 1px var(--accent-soft);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .question-block,
+    .note-block {
+      padding: 0 6mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 6%, rgba(240,234,218,0.72) 94%, transparent 100%);
+    }
+
+    .question-row,
+    .note-line {
+      display: grid;
+      grid-template-columns: 8mm minmax(0, 1fr);
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .question-index,
+    .note-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 5.2mm;
+      height: 5.2mm;
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(251,245,230,0.82);
+      box-shadow: inset 0 0 0 1px var(--accent-soft);
+      font: 700 12px/1 "Times New Roman", serif;
+    }
+
+    .question-text,
+    .note-text {
+      height: calc(var(--line) - 1.4mm);
+      padding: 0 3.2mm;
+      border-radius: 1.2mm;
+      background: rgba(251,245,230,0.58);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.10);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .code-block {
+      padding: 0 3mm;
+      color: #2a3a5c;
+      background: rgba(240,234,218,0.55);
+      font: 700 14px/var(--line) "Courier New", "Consolas", monospace;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+
+    .abstract-block {
+      padding: 0 8mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.72) 8%, rgba(240,234,218,0.72) 92%, transparent 100%);
+      color: rgba(37,51,79,0.86);
+      font-size: 15px;
+      line-height: var(--line);
+      text-align: left;
+    }
+
+    .takeaway-block,
+    .callout-block,
+    .definition-block,
+    .footnote-block {
+      padding: 0 6mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.68) 6%, rgba(240,234,218,0.68) 94%, transparent 100%);
+    }
+
+    .takeaway-row,
+    .definition-row,
+    .footnote-row {
+      display: grid;
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .takeaway-row {
+      grid-template-columns: 6mm minmax(0, 1fr);
+    }
+
+    .takeaway-mark {
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .callout-block {
+      display: grid;
+      grid-template-columns: 18mm minmax(0, 1fr);
+      align-items: center;
+      height: calc(var(--line) * 2);
+      line-height: var(--line);
+    }
+
+    .callout-label {
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      border-right: 1px solid var(--accent-soft);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .callout-text {
+      padding-left: 4mm;
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .pullquote-block {
+      height: calc(var(--line) * 3);
+      padding: var(--line) 10mm 0;
+      color: #1e2a43;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.58) 10%, rgba(240,234,218,0.58) 90%, transparent 100%);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: var(--line);
+      text-align: center;
+    }
+
+    .definition-row {
+      grid-template-columns: 28mm minmax(0, 1fr);
+      column-gap: 3mm;
+    }
+
+    .definition-term {
+      color: var(--accent);
+      text-align: right;
+    }
+
+    .timeline-block,
+    .level-block,
+    .decision-block,
+    .toc-block {
+      padding: 0 8mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.68) 7%, rgba(240,234,218,0.68) 93%, transparent 100%);
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 22mm 6mm minmax(0, 1fr);
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .timeline-dot {
+      width: 4mm;
+      height: 4mm;
+      border-radius: 999px;
+      background: rgba(178,44,49,0.16);
+      box-shadow: inset 0 0 0 1px rgba(178,44,49,0.35);
+      justify-self: center;
+    }
+
+    .level-row {
+      display: grid;
+      grid-template-columns: 18mm minmax(0, 1fr);
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 13mm;
+      height: calc(var(--line) - 1.6mm);
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(251,245,230,0.72);
+      box-shadow: inset 0 0 0 1px var(--accent-soft);
+    }
+
+    .pros-cons-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4mm;
+      padding: 0 6mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.62) 6%, rgba(240,234,218,0.62) 94%, transparent 100%);
+    }
+
+    .pros-col,
+    .cons-col {
+      min-height: calc(var(--line) * 3);
+      padding: 0 3mm;
+      color: #213454;
+      background: rgba(251,245,230,0.52);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.10);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: var(--line);
+    }
+
+    .pros-col strong,
+    .cons-col strong {
+      color: var(--accent);
+    }
+
+    .decision-row,
+    .toc-row {
+      display: grid;
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .decision-row {
+      grid-template-columns: minmax(0, 1fr) 24mm;
+      column-gap: 4mm;
+    }
+
+    .decision-status {
+      text-align: center;
+      color: var(--accent);
+      border-radius: 999px;
+      background: rgba(251,245,230,0.68);
+      box-shadow: inset 0 0 0 1px var(--accent-soft);
+    }
+
+    .score-block {
+      padding: 0 10mm;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.68) 8%, rgba(240,234,218,0.68) 92%, transparent 100%);
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 30mm 1fr 18mm;
+      gap: 3mm;
+      align-items: center;
+      height: var(--line);
+      line-height: var(--line);
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .score-track {
+      height: 3mm;
+      border-radius: 999px;
+      background: rgba(37,51,79,0.12);
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      width: var(--score);
+      border-radius: 999px;
+      background: rgba(178,44,49,0.55);
+    }
+
+    .footnote-row {
+      grid-template-columns: 7mm minmax(0, 1fr);
+      color: rgba(37,51,79,0.66);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .caption {
+      height: var(--line);
+      color: rgba(37,51,79,0.58);
+      font-size: 12px;
+      line-height: var(--line);
+      text-align: center;
+    }
+
+    .margin-note {
+      float: right;
+      width: 36mm;
+      margin-left: 5mm;
+      padding: 0 2mm;
+      color: rgba(37,51,79,0.62);
+      background: rgba(251,245,230,0.58);
+      box-shadow: inset 0 0 0 1px rgba(37,51,79,0.10);
+      font-size: 12px;
+      line-height: var(--line);
+    }
+
+    .stamp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28mm;
+      height: calc(var(--line) - 1mm);
+      border: 1px solid rgba(178,44,49,0.42);
+      border-radius: 1.4mm;
+      color: rgba(178,44,49,0.82);
+      background: rgba(251,245,230,0.44);
+      font-size: 13px;
+      font-weight: 700;
+      transform: rotate(-1.6deg);
+    }
+
+    .toc-row {
+      grid-template-columns: 9mm minmax(0, 1fr) 12mm;
+      column-gap: 2mm;
+    }
+
+    .toc-page {
+      color: rgba(178,44,49,0.78);
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: var(--line) 0;
+      outline: 1px solid rgba(37,51,79,0.34);
+      line-height: var(--line);
+    }
+
+    tr, td, th {
+      height: var(--line);
+      line-height: var(--line);
+    }
+
+    td, th {
+      padding: 0 1.2mm;
+      background: rgba(255,255,255,0.15);
+      box-shadow: inset -1px 0 rgba(37,51,79,0.28), inset 0 -1px rgba(37,51,79,0.28);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4mm;
+      margin-top: var(--line);
+      color: rgba(37,51,79,0.68);
+      font: 12px/1.5 "Consolas", monospace;
+    }
+
+    .legend div {
+      padding: 3mm;
+      border: 1px solid rgba(37,51,79,0.16);
+      background: rgba(251,245,230,0.5);
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="page">
+      <article class="content">
+        <section class="title-panel">
+          <h1>Letter Paper Component Showcase<br>信纸样式精灵图</h1>
+          <div class="byline">lienmao · 2026-06-26 · A4 ruled paper</div>
+        </section>
+
+        <h2>Document Metadata <span class="component-label">.byline / .meta-line / .signature-line</span></h2>
+        <div class="meta-line">
+          <span class="meta-chip">作者 Author</span>
+          <span class="meta-chip">研究笔记</span>
+          <span class="date-stamp">2026-06-26</span>
+        </div>
+        <div class="signature-line">
+          <span>署名</span>
+          <span class="signature-name">lienmao</span>
+        </div>
+
+        <h2>Basic Blocks <span class="component-label">heading / paragraph / quote / list</span></h2>
+        <p>这是一段正文示例。正文应贴合横线节奏，保留原文段落，不为了填满纸面强行重组。</p>
+        <blockquote>真正重要的内容可以用引用块或加粗文本承载，但不要额外添加左侧装饰线。</blockquote>
+        <div class="list-line"><span class="marker">1.</span><span>保留 Markdown 原始有序编号</span></div>
+        <div class="list-line"><span class="marker">•</span><span>短列表按横线对齐</span></div>
+
+        <h2>Formula <span class="component-label">.math-block</span></h2>
+        <div class="math-block">
+          <span class="var-token">EPV</span> = (<span class="var-token">T<sub>s</sub></span><span class="op">×</span><span class="var-token">F</span><span class="op">×</span><span class="var-token">P</span>) <span class="op">−</span> (<span class="var-token">C<sub>l</sub></span><span class="op">+</span><span class="var-token">C<sub>c</sub></span><span class="op">+</span><span class="var-token">C<sub>m</sub></span>)
+        </div>
+
+        <h2>Vertical Flow <span class="component-label">.flow-block</span></h2>
+        <div class="flow-block">
+          <div class="flow-step">收简历</div>
+          <div class="flow-connector"><span>↓</span></div>
+          <div class="flow-step">筛选简历</div>
+          <div class="flow-connector"><span>↓</span></div>
+          <div class="flow-step">安排面试</div>
+        </div>
+
+        <h2>Mapping <span class="component-label">.map-block</span></h2>
+        <div class="map-block">
+          <div class="map-row"><span class="map-cell map-left">用户写日报</span><span class="map-arrow">→</span><span class="map-cell map-right">做一个 AI 写日报工具</span></div>
+          <div class="map-row"><span class="map-cell map-left">用户搜索资料</span><span class="map-arrow">→</span><span class="map-cell map-right">做一个 AI 搜索助手</span></div>
+        </div>
+
+        <h2>Comparison <span class="component-label">.compare-block</span></h2>
+        <div class="compare-block">
+          <div class="compare-item"><span>使用前耗时</span></div>
+          <div class="compare-vs">VS</div>
+          <div class="compare-item"><span>使用后耗时</span></div>
+        </div>
+
+        <h2>Metrics and Result <span class="component-label">.metric-block / .result-block</span></h2>
+        <div class="metric-block">
+          <div class="metric-row"><span class="metric-label">单次节省时间</span><span class="metric-value">高</span></div>
+          <div class="metric-row"><span class="metric-label">配置成本</span><span class="metric-value">中</span></div>
+          <div class="metric-row"><span class="metric-label">企业付费意愿</span><span class="metric-value">强</span></div>
+        </div>
+        <div class="result-block"><span class="result-pill">节省90%时间</span></div>
+
+        <h2>Checklist <span class="component-label">.question-block / .note-block</span></h2>
+        <div class="question-block">
+          <div class="question-row"><span class="question-index">?</span><span class="question-text">这个需求是否高频发生？</span></div>
+          <div class="question-row"><span class="question-index">?</span><span class="question-text">用户是否愿意付费？</span></div>
+        </div>
+        <div class="note-block">
+          <div class="note-line"><span class="note-index">1</span><span class="note-text">安装插件</span></div>
+          <div class="note-line"><span class="note-index">2</span><span class="note-text">授权系统</span></div>
+          <div class="note-line"><span class="note-index">3</span><span class="note-text">测试生成效果</span></div>
+        </div>
+
+        <h2>Table and Code <span class="component-label">table / .code-block</span></h2>
+        <table>
+          <tr><th>组件</th><th>用途</th><th>检查点</th></tr>
+          <tr><td>metric</td><td>指标评分</td><td>整体居中</td></tr>
+          <tr><td>code</td><td>真实代码</td><td>不要误用</td></tr>
+        </table>
+        <div class="code-block">const realCode = "only for actual source code";</div>
+
+        <h2>Extended Editorial Blocks <span class="component-label">15 optional components</span></h2>
+        <div class="abstract-block">摘要：这是一段文章摘要，用于在开头快速说明主题、判断和阅读方向。摘要不编号，保持克制的浅底和较弱视觉权重。</div>
+        <div class="takeaway-block">
+          <div class="takeaway-row"><span class="takeaway-mark">◆</span><span>关键要点一：先判断需求是否真实。</span></div>
+          <div class="takeaway-row"><span class="takeaway-mark">◆</span><span>关键要点二：再判断流程是否稳定。</span></div>
+        </div>
+        <div class="callout-block">
+          <div class="callout-label">注意</div>
+          <div class="callout-text">提示、风险和限制可以用 callout，但颜色必须轻，不要抢走正文。</div>
+        </div>
+        <div class="pullquote-block">“真正有价值的产品，是让用户用更低成本完成更重要的事情。”</div>
+        <div class="definition-block">
+          <div class="definition-row"><span class="definition-term">TRM</span><span>Time Return Model，时间回报模型。</span></div>
+          <div class="definition-row"><span class="definition-term">TTFV</span><span>Time To First Value，首次价值时间。</span></div>
+        </div>
+        <div class="timeline-block">
+          <div class="timeline-row"><span>过去</span><span class="timeline-dot"></span><span>手动完成重复流程</span></div>
+          <div class="timeline-row"><span>现在</span><span class="timeline-dot"></span><span>AI 辅助重构流程</span></div>
+          <div class="timeline-row"><span>未来</span><span class="timeline-dot"></span><span>低价值动作被消灭</span></div>
+        </div>
+        <div class="level-block">
+          <div class="level-row"><span class="level-badge">L1</span><span>优化流程：让动作更快。</span></div>
+          <div class="level-row"><span class="level-badge">L2</span><span>重构流程：改变工作方式。</span></div>
+          <div class="level-row"><span class="level-badge">L3</span><span>消灭流程：让动作不再需要。</span></div>
+        </div>
+        <div class="pros-cons-block">
+          <div class="pros-col"><strong>机会</strong><br>开发成本下降<br>验证速度提升</div>
+          <div class="cons-col"><strong>陷阱</strong><br>玩具产品变多<br>价值判断变难</div>
+        </div>
+        <div class="decision-block">
+          <div class="decision-row"><span>高频、固定流程、可量化收益</span><span class="decision-status">值得做</span></div>
+          <div class="decision-row"><span>低频、强个性化、替代方案便宜</span><span class="decision-status">谨慎</span></div>
+        </div>
+        <div class="score-block">
+          <div class="score-row"><span>流程固定</span><span class="score-track"><span class="score-fill" style="--score: 85%"></span></span><span>高</span></div>
+          <div class="score-row"><span>配置成本</span><span class="score-track"><span class="score-fill" style="--score: 45%"></span></span><span>中</span></div>
+        </div>
+        <div class="footnote-block">
+          <div class="footnote-row"><span>[1]</span><span>脚注用于补充出处、假设、口径说明，不应打断正文阅读。</span></div>
+        </div>
+        <div class="caption">图 1：语义组件应服务内容结构，而不是制造装饰。</div>
+        <p><span class="margin-note">边注：只用于短注释，避免占用正文主线。</span>边注适合放很短的解释、来源或提醒。它应当弱化处理，不要覆盖横线节奏，也不要在窄版输出里强行使用。</p>
+        <div class="result-block"><span class="stamp">已验证</span></div>
+        <div class="toc-block">
+          <div class="toc-row"><span>01</span><span>时间 ROI 模型</span><span class="toc-page">05</span></div>
+          <div class="toc-row"><span>02</span><span>从优化流程到消灭流程</span><span class="toc-page">09</span></div>
+        </div>
+
+        <div class="legend">
+          <div>Use this page as a visual sprite sheet.</div>
+          <div>Keep every block aligned to --line.</div>
+          <div>Check no component is clipped.</div>
+        </div>
+      </article>
+      <div class="page-no">01</div>
+    </section>
+  </main>
+</body>
+</html>

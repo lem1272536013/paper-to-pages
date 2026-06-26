@@ -1,0 +1,4 @@
+interface:
+  display_name: "Letter Paper HTML Export / 信纸导出"
+  short_description: "Convert Markdown to A4 ruled-paper HTML and per-page PNGs"
+  default_prompt: "Use $letter-paper-html-export to convert Markdown into A4 ruled letter-paper HTML, then export each rendered page as a PNG."
