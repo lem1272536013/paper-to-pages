@@ -221,7 +221,7 @@ node scripts/export_pages.mjs --html assets/showcase.html --out assets/preview -
 
 ## License
 
-当前仓库尚未声明许可证。发布到 GitHub 前，建议根据你的开源计划补充 `LICENSE` 文件。
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
