@@ -221,7 +221,7 @@ node scripts/export_pages.mjs --html assets/showcase.html --out assets/preview -
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+本项目采用 MIT 许可证开源，详情见 [LICENSE](LICENSE)。
 
 ---
 
