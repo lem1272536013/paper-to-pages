@@ -20,16 +20,16 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    "Usage: node export_pages.mjs --html <file.html> [--out <dir>] [--chrome <chrome path>] [--clean]",
+    "用法: node export_pages.mjs --html <file.html> [--out <dir>] [--chrome <chrome path>] [--clean]",
     "",
-    "Options:",
-    "  --clean            Remove existing page-*.png files in the output directory before export",
-    "  --selector <css>   Page selector. Default: .page:not(.measure)",
-    "  --width <px>       Browser viewport width. Default: 1400",
-    "  --height <px>      Browser viewport height. Default: 1800",
-    "  --scale <number>   Device scale factor. Default: 2",
-    "  --wait <ms>        Wait before capture. Default: 1200",
-    "  --port <port>      DevTools port. Default: choose a free port",
+    "参数:",
+    "  --clean            导出前删除输出目录中已有的 page-*.png",
+    "  --selector <css>   页面选择器。默认: .page:not(.measure)",
+    "  --width <px>       浏览器视口宽度。默认: 1400",
+    "  --height <px>      浏览器视口高度。默认: 1800",
+    "  --scale <number>   设备缩放倍数。默认: 2",
+    "  --wait <ms>        截图前等待时间。默认: 1200",
+    "  --port <port>      调试端口。默认自动选择空闲端口",
   ].join("\n");
 }
 
@@ -124,7 +124,7 @@ async function rmWithRetry(target) {
       return true;
     } catch (error) {
       if (!["EBUSY", "EPERM", "ENOTEMPTY"].includes(error.code) || attempt === 7) {
-        console.warn(`Warning: could not remove temporary directory ${target}: ${error.message}`);
+        console.warn(`警告：无法删除临时目录 ${target}: ${error.message}`);
         return false;
       }
       await sleep(400 + attempt * 300);
@@ -151,7 +151,7 @@ async function waitForTab(port, getChromeError, timeoutMs = 15000) {
     } catch {}
     await sleep(250);
   }
-  throw new Error("Chrome DevTools endpoint was not ready.");
+  throw new Error("浏览器调试接口未就绪。");
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -199,7 +199,7 @@ try {
   ], { stdio: "ignore" });
 
   chrome.once("error", (error) => {
-    chromeError = new Error(`Could not launch Chrome/Chromium (${chromePath}). Pass --chrome <path> or set CHROME_PATH. ${error.message}`);
+    chromeError = new Error(`无法启动 Chrome/Chromium (${chromePath})。请传入 --chrome <path> 或设置 CHROME_PATH。${error.message}`);
   });
 
   const tab = await waitForTab(port, () => chromeError);
@@ -257,7 +257,7 @@ try {
   });
 
   const pages = metricsResult.result.value || [];
-  if (!pages.length) throw new Error(`No elements found for selector: ${selector}`);
+  if (!pages.length) throw new Error(`未找到匹配页面选择器的元素: ${selector}`);
 
   for (const page of pages) {
     const shot = await cdp("Page.captureScreenshot", {

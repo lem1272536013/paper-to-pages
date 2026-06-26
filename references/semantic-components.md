@@ -1,151 +1,151 @@
-# Semantic Components Reference
+# 语义组件规范
 
-Use this reference when Markdown contains fenced blocks, short structured text, or editorial snippets that are not real source code. Route each block to a semantic visual component before falling back to `.code-block`.
+当 Markdown 中出现代码围栏、短结构化文本或编辑性信息块，但内容并不是真实代码时，先按语义渲染为视觉组件，再考虑兜底为 `.code-block`。
 
-For visual examples of all classes, open `assets/showcase.html`.
+所有组件的视觉示例见 `assets/showcase.html`。
 
-## Contents
+## 目录
 
-- Detection order
-- Core components
-- Optional editorial components
-- Recognition helpers
-- Rendering guardrails
+- 识别顺序
+- 核心组件
+- 可选编辑组件
+- 识别函数
+- 渲染护栏
 
-## Detection Order
+## 识别顺序
 
-Evaluate fenced blocks in this order:
+按以下顺序判断围栏块：
 
-1. `math` fence, or formula-like content: `.math-block`.
-2. Lines containing standalone `↓`: `.flow-block`.
-3. Every non-empty line contains `→`: `.map-block`.
-4. Three lines where the middle line is `VS`: `.compare-block`.
-5. Every non-empty line is `label: value` or `label：value`: `.metric-block`.
-6. One short line containing result words such as `save`, `reduce`, `increase`, `decrease`, `节省`, `减少`, `提升`, `降低`, `%`, `％`: `.result-block`.
-7. Three or more lines ending in `?` or `？`, optionally prefixed with `1.`: `.question-block`.
-8. Two to ten short lines without arrows, `VS`, or metric colons: `.note-block`.
-9. Real source code only: `.code-block`.
+1. `math` 围栏，或明显公式内容：`.math-block`。
+2. 多行中包含独立 `↓`：`.flow-block`。
+3. 每个非空行都包含 `→`：`.map-block`。
+4. 三行结构，且中间行为 `VS`：`.compare-block`。
+5. 每个非空行都是 `标签: 值` 或 `标签：值`：`.metric-block`。
+6. 单行短结果，包含 `节省`、`减少`、`提升`、`降低`、`%`、`％` 等结果词：`.result-block`。
+7. 三行以上都以 `?` 或 `？` 结尾，可带 `1.` 这类序号：`.question-block`。
+8. 二到十行短文本，不含箭头、`VS` 或冒号指标：`.note-block`。
+9. 只有真实源码或命令示例才使用：`.code-block`。
 
-When more than one rule matches, choose the earlier rule. In particular, `VS` compare is not a numbered list, and colon metrics are not plain notes.
+如果多个规则同时命中，选择更靠前的规则。尤其注意：`VS` 对比不是编号清单，冒号指标也不是普通短文本。
 
-## Core Components
+## 核心组件
 
 ### `.math-block`
 
-Use for formulas and compact variable definitions.
+用于公式和紧凑变量说明。
 
-- Center the formula.
-- Convert `\times` to `×`.
-- Render variables like `T_s`, `C_l`, and `C_c` with subscript.
-- Do not leak variable backticks into the page.
-- Reduce spacing or font size before allowing horizontal clipping.
-- Pair the formula with Chinese labels or variable explanations when the source provides them.
+- 公式整体居中。
+- 把 `\times` 显示为 `×`。
+- 把 `T_s`、`C_l`、`C_c` 等变量显示为下标。
+- 不要让变量反引号泄漏到页面。
+- 先压缩间距或字号，再考虑允许横向裁切。
+- 源文提供中文变量说明时，把公式和中文标识配套呈现。
 
 ### `.flow-block`
 
-Use for vertical fixed processes such as recruitment, reimbursement, contract approval, or setup sequences.
+用于招聘、报销、合同审批、系统配置等固定纵向流程。
 
-- Render each step as a rounded node.
-- Connect steps with a thin vertical line and arrow.
-- Center the whole group.
-- Do not leave the original `↓` characters as plain text.
-- Split long flows across pages if the component would exceed the page content height.
+- 每一步渲染为圆角节点。
+- 步骤之间用细线和箭头连接。
+- 整组居中。
+- 不要把原始 `↓` 留成纯文本。
+- 流程过长时拆页，不要让组件超过页面内容高度。
 
 ### `.map-block`
 
-Use for left-right mappings such as user action -> product response.
+用于“用户动作 -> 产品反应”这类左右映射。
 
-- Use two columns with a small center arrow.
-- Keep left and right labels visually balanced.
-- Do not render these as centered plain text rows.
-- If rows are long, allow wrapping inside each column rather than shrinking the entire block too aggressively.
+- 使用左右两列，中间放小箭头。
+- 左右文本保持视觉平衡。
+- 不要渲染成普通居中文本行。
+- 行内容较长时，优先让单元格内部换行，不要把整组缩得太小。
 
 ### `.compare-block`
 
-Use for `A / VS / B` comparisons.
+用于 `A / VS / B` 对比。
 
-- Do not number the lines.
-- Put the top item and bottom item in centered capsules or labels.
-- Put `VS` in the middle with a subtle divider line.
-- Keep the block compact and centered.
+- 不要编号。
+- 上下两项放入居中的标签或胶囊。
+- `VS` 放在中间，并配一条轻量分隔线。
+- 整体保持紧凑、居中。
 
 ### `.metric-block`
 
-Use for `label: value` or `标签：值` rows.
+用于 `标签: 值` 或 `标签：值` 指标行。
 
-- Separate label and value into a centered label-value layout.
-- Values may use a muted accent color.
-- Support one to seven rows.
-- Avoid visual drift where the whole block looks too far right.
-- Do not leave multi-line metric text as a code block.
+- 标签和值分离，使用居中的标签-数值布局。
+- 数值可以使用弱强调色。
+- 支持一到七行指标。
+- 避免整组看起来偏右。
+- 不要把多行指标留成代码块。
 
 ### `.result-block`
 
-Use for one-line results such as `节省90%时间`.
+用于 `节省90%时间` 这类单行结果。
 
-- Render as a centered pill or compact callout.
-- Keep emphasis restrained; it should read as a result, not a warning.
-- Do not use this for ordinary sentences with no measurable outcome.
+- 渲染为居中的结果胶囊或紧凑提示块。
+- 强调要克制，让它像结果，不像警告。
+- 普通句子没有可衡量结果时，不要使用该组件。
 
 ### `.question-block`
 
-Use for question checklists and product-evaluation prompts.
+用于问题清单和产品判断问题。
 
-- Use `?` markers for unnumbered questions.
-- Preserve explicit numeric markers when the source has `1.`, `2.`, etc.
-- Put each question on its own row.
-- Do not force all question lists into numbered lists; preserve the author's intent.
+- 无编号问题使用 `?` 标记。
+- 源文有 `1.`、`2.` 等显式序号时保留。
+- 每个问题独立成行。
+- 不要强行把所有问题清单改成编号列表，保留作者原意。
 
 ### `.note-block`
 
-Use for short non-sequential text groups.
+用于短文本组。
 
-- Only add numbers when the content expresses real order or steps.
-- For simple centered statements, use clean rows rather than fake process styling.
-- If the content contains arrows, `VS`, or metric colons, route it to the more specific component first.
+- 只有内容确实表达顺序或步骤时才加序号。
+- 简单居中陈述用干净行样式，不要伪装成流程。
+- 如果内容包含箭头、`VS` 或冒号指标，先路由到更具体的组件。
 
 ### `.code-block`
 
-Use only for real source code or command examples.
+只用于真实源码或命令示例。
 
-- Preserve monospace formatting.
-- Do not use code style for formulas, flows, mappings, metrics, result pills, or question lists.
-- In ordinary article output, `.code-block` count should usually be `0`.
+- 保留等宽排版。
+- 不要把公式、流程、映射、指标、结果、问题清单渲染成代码块。
+- 普通文章输出里，`.code-block` 数量通常应为 `0`。
 
-## Optional Editorial Components
+## 可选编辑组件
 
-Use these components when the source text naturally contains editorial structure. Do not invent them just to decorate the page.
+只有源文自然包含对应结构时才使用，不要为了装饰强行生成。
 
-- `.abstract-block`: compact opening summary. Use for an abstract or brief overview, not for ordinary paragraphs.
-- `.takeaway-block`: key takeaways. Use diamond or short markers rather than numeric steps.
-- `.callout-block`: notice, tip, warning, or risk. Keep colors light and avoid visual alarm unless the user asks.
-- `.pullquote-block`: centered pull quote for a core judgment or memorable sentence.
-- `.definition-block`: term-definition pairs such as `TRM: Time Return Model`.
-- `.timeline-block`: stages over time. Use for past/current/future or phase evolution, not action workflows.
-- `.level-block`: hierarchical levels such as L1/L2/L3 or first/second/third layer.
-- `.pros-cons-block`: two-column opportunities vs risks, pros vs cons, advantages vs problems.
-- `.decision-block`: condition plus recommendation/result.
-- `.score-block`: visual score bar for low/medium/high or weak/strong values.
-- `.footnote-block`: source, assumption, or caveat notes.
-- `.caption`: image, table, or figure caption.
-- `.margin-note`: short side note. Avoid on narrow layouts or dense pages.
-- `.stamp`: light status mark such as draft, sample, verified.
-- `.toc-block`: table of contents for long documents.
+- `.abstract-block`：摘要，用于文章开头的内容概览，不用于普通段落。
+- `.takeaway-block`：关键要点，用短标记或菱形符号，不要伪装成步骤。
+- `.callout-block`：提示、注意、风险或限制，颜色要轻，除非用户要求，不要做成强警告。
+- `.pullquote-block`：金句摘录，用于核心判断或值得突出的一句话。
+- `.definition-block`：术语定义，例如 `TRM：时间回报模型`。
+- `.timeline-block`：时间线，用于过去、现在、未来或阶段演进，不用于动作流程。
+- `.level-block`：层级模型，例如 L1/L2/L3、第一层/第二层/第三层。
+- `.pros-cons-block`：优缺点、机会与风险、收益与问题的双列对照。
+- `.decision-block`：条件与判断结果。
+- `.score-block`：高/中/低、强/弱等评价值的评分条。
+- `.footnote-block`：来源、假设、口径说明等脚注。
+- `.caption`：图片、表格、图示或截图说明。
+- `.margin-note`：边注，只放短注释；窄版或密集页面慎用。不要让边注浮动侵入后续目录、印章、结果块等组件，必要时使用独立双栏容器或清除浮动。
+- `.stamp`：轻量状态印章，例如“草稿”“示例”“已验证”。
+- `.toc-block`：目录，用于长文的章节入口。
 
-## Optional Routing Hints
+## 可选路由提示
 
-- Route `摘要`, `Abstract`, or an opening overview block to `.abstract-block`.
-- Route `核心结论`, `关键要点`, or `Key takeaways` to `.takeaway-block`.
-- Route `注意`, `提示`, `风险`, `Warning`, or `Note` to `.callout-block`.
-- Route short standalone quoted conclusions to `.pullquote-block`.
-- Route repeated `term: definition` concept explanations to `.definition-block`.
-- Route `过去/现在/未来` or date/phase sequences to `.timeline-block`.
-- Route `第一层/第二层/第三层`, `L1/L2/L3`, or maturity models to `.level-block`.
-- Route paired positive/negative sections to `.pros-cons-block`.
-- Route `if condition then recommendation` structures to `.decision-block`.
-- Route numeric or ordinal evaluation values to `.score-block` when a visual scale is clearer than text.
+- `摘要`、`概览`、文章开头的总述块 -> `.abstract-block`。
+- `核心结论`、`关键要点` -> `.takeaway-block`。
+- `注意`、`提示`、`风险`、`限制` -> `.callout-block`。
+- 短的独立引用或结论句 -> `.pullquote-block`。
+- 连续的 `术语：解释` -> `.definition-block`。
+- `过去/现在/未来` 或阶段序列 -> `.timeline-block`。
+- `第一层/第二层/第三层`、`L1/L2/L3` 或成熟度模型 -> `.level-block`。
+- 成对的正反面、收益风险、机会陷阱 -> `.pros-cons-block`。
+- “如果满足条件，则建议/结果为……” -> `.decision-block`。
+- 数值型或等级型评价 -> `.score-block`，前提是可视化评分比纯文本更清楚。
 
-## Recognition Helpers
+## 识别函数
 
 ```js
 const linesOf = (text) => text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
@@ -169,11 +169,11 @@ const isResult = (text) => {
 };
 ```
 
-## Rendering Guardrails
+## 渲染护栏
 
-- Keep component heights and vertical margins aligned to the same `--line` variable as the ruled paper background.
-- After rendering, check `scrollWidth <= clientWidth` for every semantic component.
-- Prefer subtle borders, muted fills, and compact labels. These components live inside a handwritten article, not a dashboard.
-- Do not use decorative colors so strongly that they compete with headings or body emphasis.
-- Split, wrap, or reduce internal font size when a component would overflow horizontally.
-- Split long components across pages before shrinking them below readable size.
+- 组件高度和垂直间距尽量对齐信纸背景使用的同一个 `--line` 变量。
+- 渲染后检查每个语义组件的 `scrollWidth <= clientWidth`。
+- 优先使用细边框、弱底色、紧凑标签。组件属于手写风文章，不是仪表盘。
+- 装饰色不要强到压过标题或正文强调。
+- 组件横向溢出时，先换行、拆分或微调内部字号。
+- 长组件先拆页，再考虑缩小到接近不可读的程度。

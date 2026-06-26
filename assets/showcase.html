@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Letter Paper Component Showcase</title>
+  <title>信纸样式精灵图</title>
   <style>
     :root {
       --paper: #fbf5e6;
@@ -743,16 +743,39 @@
       text-align: center;
     }
 
+    .margin-note-demo {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 42mm;
+      column-gap: 5mm;
+      min-height: calc(var(--line) * 3);
+      margin-top: var(--line);
+      padding: 0 6mm;
+      clear: both;
+      background:
+        linear-gradient(90deg, transparent 0, rgba(240,234,218,0.58) 6%, rgba(240,234,218,0.58) 94%, transparent 100%);
+    }
+
+    .margin-note-demo p {
+      margin: 0;
+      color: #213454;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: var(--line);
+    }
+
     .margin-note {
-      float: right;
-      width: 36mm;
-      margin-left: 5mm;
-      padding: 0 2mm;
+      display: block;
+      min-height: calc(var(--line) * 3);
+      padding: 0 2.5mm;
       color: rgba(37,51,79,0.62);
       background: rgba(251,245,230,0.58);
       box-shadow: inset 0 0 0 1px rgba(37,51,79,0.10);
       font-size: 12px;
       line-height: var(--line);
+    }
+
+    .stamp-demo {
+      margin-top: var(--line);
     }
 
     .stamp {
@@ -778,6 +801,10 @@
     .toc-page {
       color: rgba(178,44,49,0.78);
       text-align: right;
+    }
+
+    .toc-showcase {
+      margin-top: var(--line);
     }
 
     table {
@@ -823,13 +850,13 @@
     <section class="page">
       <article class="content">
         <section class="title-panel">
-          <h1>Letter Paper Component Showcase<br>信纸样式精灵图</h1>
-          <div class="byline">lienmao · 2026-06-26 · A4 ruled paper</div>
+          <h1>信纸样式精灵图<br>组件效果总览</h1>
+          <div class="byline">lienmao · 2026-06-26 · A4 横线信纸</div>
         </section>
 
-        <h2>Document Metadata <span class="component-label">.byline / .meta-line / .signature-line</span></h2>
+        <h2>文档元信息 <span class="component-label">.byline / .meta-line / .signature-line</span></h2>
         <div class="meta-line">
-          <span class="meta-chip">作者 Author</span>
+          <span class="meta-chip">作者</span>
           <span class="meta-chip">研究笔记</span>
           <span class="date-stamp">2026-06-26</span>
         </div>
@@ -838,18 +865,18 @@
           <span class="signature-name">lienmao</span>
         </div>
 
-        <h2>Basic Blocks <span class="component-label">heading / paragraph / quote / list</span></h2>
+        <h2>基础文本块 <span class="component-label">标题 / 段落 / 引用 / 列表</span></h2>
         <p>这是一段正文示例。正文应贴合横线节奏，保留原文段落，不为了填满纸面强行重组。</p>
         <blockquote>真正重要的内容可以用引用块或加粗文本承载，但不要额外添加左侧装饰线。</blockquote>
         <div class="list-line"><span class="marker">1.</span><span>保留 Markdown 原始有序编号</span></div>
         <div class="list-line"><span class="marker">•</span><span>短列表按横线对齐</span></div>
 
-        <h2>Formula <span class="component-label">.math-block</span></h2>
+        <h2>公式 <span class="component-label">.math-block</span></h2>
         <div class="math-block">
           <span class="var-token">EPV</span> = (<span class="var-token">T<sub>s</sub></span><span class="op">×</span><span class="var-token">F</span><span class="op">×</span><span class="var-token">P</span>) <span class="op">−</span> (<span class="var-token">C<sub>l</sub></span><span class="op">+</span><span class="var-token">C<sub>c</sub></span><span class="op">+</span><span class="var-token">C<sub>m</sub></span>)
         </div>
 
-        <h2>Vertical Flow <span class="component-label">.flow-block</span></h2>
+        <h2>纵向流程 <span class="component-label">.flow-block</span></h2>
         <div class="flow-block">
           <div class="flow-step">收简历</div>
           <div class="flow-connector"><span>↓</span></div>
@@ -858,20 +885,20 @@
           <div class="flow-step">安排面试</div>
         </div>
 
-        <h2>Mapping <span class="component-label">.map-block</span></h2>
+        <h2>左右映射 <span class="component-label">.map-block</span></h2>
         <div class="map-block">
           <div class="map-row"><span class="map-cell map-left">用户写日报</span><span class="map-arrow">→</span><span class="map-cell map-right">做一个 AI 写日报工具</span></div>
           <div class="map-row"><span class="map-cell map-left">用户搜索资料</span><span class="map-arrow">→</span><span class="map-cell map-right">做一个 AI 搜索助手</span></div>
         </div>
 
-        <h2>Comparison <span class="component-label">.compare-block</span></h2>
+        <h2>对比 <span class="component-label">.compare-block</span></h2>
         <div class="compare-block">
           <div class="compare-item"><span>使用前耗时</span></div>
           <div class="compare-vs">VS</div>
           <div class="compare-item"><span>使用后耗时</span></div>
         </div>
 
-        <h2>Metrics and Result <span class="component-label">.metric-block / .result-block</span></h2>
+        <h2>指标与结果 <span class="component-label">.metric-block / .result-block</span></h2>
         <div class="metric-block">
           <div class="metric-row"><span class="metric-label">单次节省时间</span><span class="metric-value">高</span></div>
           <div class="metric-row"><span class="metric-label">配置成本</span><span class="metric-value">中</span></div>
@@ -879,7 +906,7 @@
         </div>
         <div class="result-block"><span class="result-pill">节省90%时间</span></div>
 
-        <h2>Checklist <span class="component-label">.question-block / .note-block</span></h2>
+        <h2>问题与短清单 <span class="component-label">.question-block / .note-block</span></h2>
         <div class="question-block">
           <div class="question-row"><span class="question-index">?</span><span class="question-text">这个需求是否高频发生？</span></div>
           <div class="question-row"><span class="question-index">?</span><span class="question-text">用户是否愿意付费？</span></div>
@@ -890,15 +917,15 @@
           <div class="note-line"><span class="note-index">3</span><span class="note-text">测试生成效果</span></div>
         </div>
 
-        <h2>Table and Code <span class="component-label">table / .code-block</span></h2>
+        <h2>表格与真实代码 <span class="component-label">表格 / .code-block</span></h2>
         <table>
           <tr><th>组件</th><th>用途</th><th>检查点</th></tr>
-          <tr><td>metric</td><td>指标评分</td><td>整体居中</td></tr>
-          <tr><td>code</td><td>真实代码</td><td>不要误用</td></tr>
+          <tr><td>指标</td><td>指标评分</td><td>整体居中</td></tr>
+          <tr><td>代码</td><td>真实代码</td><td>不要误用</td></tr>
         </table>
-        <div class="code-block">const realCode = "only for actual source code";</div>
+        <div class="code-block">const 示例代码 = "只用于真实源码";</div>
 
-        <h2>Extended Editorial Blocks <span class="component-label">15 optional components</span></h2>
+        <h2>扩展编辑组件 <span class="component-label">15 个可选组件</span></h2>
         <div class="abstract-block">摘要：这是一段文章摘要，用于在开头快速说明主题、判断和阅读方向。摘要不编号，保持克制的浅底和较弱视觉权重。</div>
         <div class="takeaway-block">
           <div class="takeaway-row"><span class="takeaway-mark">◆</span><span>关键要点一：先判断需求是否真实。</span></div>
@@ -906,12 +933,12 @@
         </div>
         <div class="callout-block">
           <div class="callout-label">注意</div>
-          <div class="callout-text">提示、风险和限制可以用 callout，但颜色必须轻，不要抢走正文。</div>
+          <div class="callout-text">提示、风险和限制可以用提示块承载，但颜色必须轻，不要抢走正文。</div>
         </div>
         <div class="pullquote-block">“真正有价值的产品，是让用户用更低成本完成更重要的事情。”</div>
         <div class="definition-block">
-          <div class="definition-row"><span class="definition-term">TRM</span><span>Time Return Model，时间回报模型。</span></div>
-          <div class="definition-row"><span class="definition-term">TTFV</span><span>Time To First Value，首次价值时间。</span></div>
+          <div class="definition-row"><span class="definition-term">TRM</span><span>时间回报模型。</span></div>
+          <div class="definition-row"><span class="definition-term">TTFV</span><span>首次价值时间。</span></div>
         </div>
         <div class="timeline-block">
           <div class="timeline-row"><span>过去</span><span class="timeline-dot"></span><span>手动完成重复流程</span></div>
@@ -939,17 +966,20 @@
           <div class="footnote-row"><span>[1]</span><span>脚注用于补充出处、假设、口径说明，不应打断正文阅读。</span></div>
         </div>
         <div class="caption">图 1：语义组件应服务内容结构，而不是制造装饰。</div>
-        <p><span class="margin-note">边注：只用于短注释，避免占用正文主线。</span>边注适合放很短的解释、来源或提醒。它应当弱化处理，不要覆盖横线节奏，也不要在窄版输出里强行使用。</p>
-        <div class="result-block"><span class="stamp">已验证</span></div>
-        <div class="toc-block">
+        <div class="margin-note-demo">
+          <p>边注适合放很短的解释、来源或提醒。它应当弱化处理，不要覆盖横线节奏，也不要在窄版输出里强行使用。</p>
+          <span class="margin-note">边注：只用于短注释，避免占用正文主线。</span>
+        </div>
+        <div class="result-block stamp-demo"><span class="stamp">已验证</span></div>
+        <div class="toc-block toc-showcase">
           <div class="toc-row"><span>01</span><span>时间 ROI 模型</span><span class="toc-page">05</span></div>
           <div class="toc-row"><span>02</span><span>从优化流程到消灭流程</span><span class="toc-page">09</span></div>
         </div>
 
         <div class="legend">
-          <div>Use this page as a visual sprite sheet.</div>
-          <div>Keep every block aligned to --line.</div>
-          <div>Check no component is clipped.</div>
+          <div>把这一页当作视觉样式精灵图。</div>
+          <div>所有块尽量对齐 --line 横线网格。</div>
+          <div>检查每个组件都不要被裁切。</div>
         </div>
       </article>
       <div class="page-no">01</div>

@@ -1,9 +1,9 @@
 ---
-name: letter-paper-html-export
-description: Convert Markdown or plain text into polished A4 ruled letter-paper HTML with multi-page pagination, handwriting-style typography, lined-paper alignment, semantic visual components, optional author/date metadata, and one-PNG-per-page export. Use when Codex needs to create printable A4 stationery, ruled-paper HTML, multi-page letter-paper documents, handwriting-style article visuals, or per-page PNG images from Markdown/plain text.
+name: paper-to-pages
+description: 将 Markdown 或纯文本转换成精致的 A4 横线信纸 HTML，支持多页分页、手写风排版、横线对齐、语义组件渲染、作者/日期等元信息，以及逐页导出 PNG。适用于用户要求把文章、笔记、文稿、Markdown、纯文本做成可打印信纸、A4 多页 HTML、手写风长图、逐页图片或信纸样式文档的场景。
 ---
 
-# 信纸 HTML 导出
+# 纸上成篇
 
 ## 工作流程
 
@@ -85,13 +85,13 @@ p, h2, .list-line, blockquote, td, th {
 2. 独立 `↓` 多行流程 -> `.flow-block`
 3. 每行包含 `→` 的映射 -> `.map-block`
 4. 三行且中间为 `VS` -> `.compare-block`
-5. 每行都是 `标签：值` / `label: value` -> `.metric-block`
+5. 每行都是 `标签：值` / `标签: 值` -> `.metric-block`
 6. 单行结果短语 -> `.result-block`
 7. 多行问句 -> `.question-block`
 8. 2-10 行短文本清单 -> `.note-block`
 9. 只有真实代码 -> `.code-block`
 
-完整组件目录、检测 helper、适用场景和 15 个可选编辑组件都以 [references/semantic-components.md](references/semantic-components.md) 为准。修改样式或新增模板前，打开 [assets/showcase.html](assets/showcase.html) 对照类名、间距、居中方式和色彩关系；它是样式精灵图，不是最终文档模板。
+完整组件目录、识别函数、适用场景和 15 个可选编辑组件都以 [references/semantic-components.md](references/semantic-components.md) 为准。修改样式或新增模板前，打开 [assets/showcase.html](assets/showcase.html) 对照类名、间距、居中方式和色彩关系；它是样式精灵图，不是最终文档模板。
 
 ## 自动加粗
 
@@ -109,7 +109,7 @@ p, h2, .list-line, blockquote, td, th {
 元信息来源优先级：
 
 1. 用户显式提供的作者、日期、标签或署名。
-2. Markdown frontmatter 或源文开头的明确元信息。
+2. Markdown 文件头元信息，或源文开头的明确元信息。
 3. 用户要求自动日期时，使用当前日期。
 4. 未提供作者时不要编造作者。
 
@@ -117,7 +117,7 @@ p, h2, .list-line, blockquote, td, th {
 
 - 标题区域使用固定高度块，高度为 `var(--line)` 的整数倍。
 - 作者/日期在标题块内绝对定位，避免改变文档流。
-- 不要用负 margin 处理标题元数据。
+- 不要用负外边距处理标题元数据。
 - `.byline` 用于标题下方作者/日期，居中、弱化颜色，可用 Georgia / Times 一类衬线数字字体。
 - `.meta-line` + `.meta-chip` 用于正文中的来源、分类、标签等一行元信息。
 - `.date-stamp` 用于需要强调的日期，像轻微印章，不要大角度旋转或重边框。
@@ -211,7 +211,7 @@ HTML 稳定后，使用 `scripts/export_pages.mjs`。脚本需要 Node.js 22+，
 跨平台示例：
 
 ```bash
-node /path/to/letter-paper-html-export/scripts/export_pages.mjs \
+node /path/to/paper-to-pages/scripts/export_pages.mjs \
   --html /path/to/letter-paper.html \
   --out /path/to/pages \
   --clean
@@ -233,9 +233,9 @@ node .\scripts\export_pages.mjs `
 - `--selector <css>`：指定页面选择器，默认 `.page:not(.measure)`。
 - `--wait <ms>`：截图前等待时间，复杂页面可调大。
 - `--width` / `--height` / `--scale`：控制视口和输出分辨率。
-- `--port <port>`：指定 DevTools 端口；默认自动选择空闲端口。
+- `--port <port>`：指定调试端口；默认自动选择空闲端口。
 
-脚本通过 DevTools 协议打开浏览器，裁切每个 `.page:not(.measure)`，保存为 `page-01.png`、`page-02.png` 等文件。临时浏览器 profile 清理失败只给 warning，不应影响已经导出的图片。
+脚本通过浏览器调试协议打开页面，裁切每个 `.page:not(.measure)`，保存为 `page-01.png`、`page-02.png` 等文件。临时浏览器配置目录清理失败只给出警告，不应影响已经导出的图片。
 
 ## 验证清单
 
@@ -269,6 +269,6 @@ PNG 导出：
 - 不要写死本机绝对路径；HTML 输入、图片输出、浏览器路径都来自用户参数或环境变量。
 - 不要依赖临时 HTTP 服务作为最终导出方案；优先使用 `scripts/export_pages.mjs`。
 - 横线背景必须对齐 `.content`。
-- 标题元数据不要使用负 margin。
+- 标题元数据不要使用负外边距。
 - 普通代码块只保留真实代码；公式、流程、映射、指标、结论、问题清单等结构化内容先做语义识别。
 - 不要把 `assets/showcase.html` 当最终文档模板直接复制；正式输出仍应根据源文内容分页生成。
